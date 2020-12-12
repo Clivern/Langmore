@@ -3,4 +3,5 @@
 // license that can be found in the LICENSE file.
 
 pub mod command;
+pub mod database;
 pub mod writer;
