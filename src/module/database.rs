@@ -11,6 +11,7 @@ use std::fs::File;
 use std::sync::RwLock;
 
 #[derive(Serialize, Debug, Deserialize)]
+// Database type
 struct Database {
     // the sync lock
     lock: RwLock<()>,
