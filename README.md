@@ -10,12 +10,6 @@
 </p>
 
 
-## Deployment
-
-```bash
-#
-```
-
 ## Design of Langmore
 
 `Langmore` uses a lot of principles from log-structured file systems and draws inspiration from a number of designs that involve log file merging. It essentially is just a directory of append-only (log) files with a fixed structure and an in-memory index holding the keys mapped to a bunch of information necessary for point lookups - referring to the entry in the datafile.
@@ -38,6 +32,33 @@ It is an in-memory hash table that stores all the keys present in the Langmore i
 <p align="center">
     <img src="/static/keydir.png?v=0.1.0" width="90%" />
 </p>
+
+
+## Deployment
+
+Build the project with the following command
+
+```bash
+$ make build
+```
+
+Define the configs and run the `Langmore` binary.
+
+```
+export HOSTNAME=127.0.0.1:8080
+export STORAGE_DIR=/etc/langmore
+
+$ ./target/debug/langmore
+```
+
+
+## Usage
+
+You can use `netcat` to interact with `Langmore`
+
+```
+$ nc 127.0.0.1 8080
+```
 
 
 ## Versioning
