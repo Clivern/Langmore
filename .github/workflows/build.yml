@@ -23,6 +23,3 @@ jobs:
 
     - name: Run ci
       run: make ci
-
-    - name: Run run
-      run: make run
