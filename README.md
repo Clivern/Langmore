@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="/static/12.jpeg" width="75%" />
+    <img src="https://raw.githubusercontent.com/Clivern/Langmore/main/static/12.jpeg" width="75%" />
     <h3 align="center">Langmore</h3>
     <p align="center">A KV Store Based On Write-Ahead Log</p>
     <p align="center">
@@ -19,7 +19,7 @@
 They re append-only log files that hold the KV pairs along with some meta-information. A single `Langmore` instance could have many datafiles, out of which just one will be active and opened for writing, while the others are considered immutable and are only used for reads.
 <br/>
 <p align="center">
-    <img src="/static/datafiles.png?v=0.1.0" width="90%" />
+    <img src="https://raw.githubusercontent.com/Clivern/Langmore/main/static/datafiles.png?v=0.1.0" width="90%" />
 </p>
 
 
@@ -30,7 +30,7 @@ Each entry in the datafile has a fixed structure illustrated above and it stores
 It is an in-memory hash table that stores all the keys present in the Langmore instance and maps it to the offset in the datafile where the log entry (value) resides; thus facilitating the point lookups. The mapped value in the Hash Table is a structure that holds `file_id`, `offset`, and some meta-information like timestamp, as illustrated below.
 
 <p align="center">
-    <img src="/static/keydir.png?v=0.1.0" width="90%" />
+    <img src="https://raw.githubusercontent.com/Clivern/Langmore/main/static/keydir.png?v=0.1.0" width="90%" />
 </p>
 
 
@@ -42,9 +42,15 @@ Build the project with the following command
 $ make build
 ```
 
+or install with cargo
+
+```bash
+$ cargo install langmore
+```
+
 Define the configs and run the `Langmore` binary.
 
-```
+```bash
 export HOSTNAME=127.0.0.1:8080
 export STORAGE_DIR=/etc/langmore
 
@@ -56,7 +62,7 @@ $ ./target/debug/langmore
 
 You can use `netcat` to interact with `Langmore`
 
-```
+```bash
 $ nc 127.0.0.1 8080
 ```
 
