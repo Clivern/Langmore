@@ -1,5 +1,7 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Clivern/Langmore/main/static/12.jpeg" width="75%" />
+    <a href="https://www.youtube.com/watch?v=Km_Bi6Ug2Wk">
+        <img src="https://raw.githubusercontent.com/Clivern/Langmore/main/static/12.jpeg" width="75%" />
+    </a>
     <h3 align="center">Langmore</h3>
     <p align="center">A KV Store Based On Write-Ahead Log</p>
     <p align="center">
