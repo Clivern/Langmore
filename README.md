@@ -4,7 +4,7 @@
     <p align="center">A KV Store Based On Write-Ahead Log</p>
     <p align="center">
         <a href="https://github.com/Clivern/Dwal/actions"><img src="https://github.com/Clivern/Dwal/actions/workflows/build.yml/badge.svg"></a>
-        <a href="https://github.com/Clivern/Dwal/releases"><img src="https://img.shields.io/badge/Version-v0.1.0-green.svg"></a>
+        <a href="https://github.com/Clivern/Dwal/releases"><img src="https://img.shields.io/badge/Version-v0.1.2-green.svg"></a>
         <a href="https://github.com/Clivern/Dwal/blob/main/LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-green.svg"></a>
     </p>
 </p>
