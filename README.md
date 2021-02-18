@@ -3,9 +3,9 @@
     <h3 align="center">DWAL</h3>
     <p align="center">A Distributed Write-Ahead Log</p>
     <p align="center">
-        <a href="https://github.com/Clivern/Dwal/actions"><img src="https://github.com/Clivern/Dwal/workflows/Build/badge.svg"></a>
-        <a href="https://github.com/Clivern/Dwal/releases"><img src="https://img.shields.io/badge/Version-v0.1.0-red.svg"></a>
-        <a href="https://github.com/Clivern/Dwal/blob/main/LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-orange.svg"></a>
+        <a href="https://github.com/Clivern/Dwal/actions"><img src="https://github.com/Clivern/Dwal/actions/workflows/build.yml/badge.svg"></a>
+        <a href="https://github.com/Clivern/Dwal/releases"><img src="https://img.shields.io/badge/Version-v0.1.0-green.svg"></a>
+        <a href="https://github.com/Clivern/Dwal/blob/main/LICENSE"><img src="https://img.shields.io/badge/LICENSE-MIT-green.svg"></a>
     </p>
 </p>
 <br/>
