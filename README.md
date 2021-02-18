@@ -37,4 +37,4 @@ We are an open source, community-driven project so please feel free to join us. 
 
 © 2022, clivern. Released under [MIT License](https://opensource.org/licenses/mit-license.php).
 
-**Dwal** is authored and maintained by [@clivern](http://github.com/clivern).
+**Dwal** is authored and maintained by [@Clivern](http://github.com/clivern).
