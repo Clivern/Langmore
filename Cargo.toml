@@ -1,0 +1,13 @@
+[package]
+name = "dwal"
+version = "0.1.0"
+authors = ["Clivern <hello@clivern.com>"]
+edition = "2018"
+description = "A Distributed Write-Ahead Log"
+license = "MIT"
+repository = "https://github.com/Clivern/Dwal"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8"
