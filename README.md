@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://www.rust-lang.org/logos/rust-logo-512x512-blk.png" width="20%" />
     <h3 align="center">DWAL</h3>
-    <p align="center">A Distributed Write-Ahead Log</p>
+    <p align="center">A KV Store Based On Write-Ahead Log</p>
     <p align="center">
         <a href="https://github.com/Clivern/Dwal/actions"><img src="https://github.com/Clivern/Dwal/actions/workflows/build.yml/badge.svg"></a>
         <a href="https://github.com/Clivern/Dwal/releases"><img src="https://img.shields.io/badge/Version-v0.1.0-green.svg"></a>

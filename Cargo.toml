@@ -1,9 +1,9 @@
 [package]
 name = "dwal"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Clivern <hello@clivern.com>"]
 edition = "2018"
-description = "A Distributed Write-Ahead Log"
+description = "A KV Store Based On Write-Ahead Log"
 license = "MIT"
 repository = "https://github.com/Clivern/Dwal"
 
