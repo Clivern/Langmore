@@ -29,6 +29,12 @@ release:
 	$(cargo) build --release --verbose
 
 
+## publish: Publish release
+publish:
+	@echo "\n>> ============= Cargo Publish ============= <<"
+	$(cargo) publish
+
+
 ## test: Run test cases
 test:
 	@echo "\n>> ============= Cargo Test ============= <<"
