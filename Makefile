@@ -15,6 +15,11 @@ config:
 	$(rustup) component add rustfmt
 
 
+## doc: Generate docs.
+doc:
+	$(cargo) doc
+
+
 ## build: Build binary
 build:
 	@echo "\n>> ============= Cargo Build ============= <<"
