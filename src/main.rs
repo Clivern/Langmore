@@ -16,6 +16,7 @@ use util::environ::get_config;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    // Load .env file
     dotenv().ok();
 
     // Set up our TCP listener on.
