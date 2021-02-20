@@ -4,6 +4,7 @@
 
 extern crate dotenv;
 
+mod module;
 mod util;
 
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -19,12 +20,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Load .env file
     dotenv().ok();
 
-    // Set up our TCP listener on.
+    // Set up our TCP listener.
     let addr = env::args()
         .nth(1)
         .unwrap_or_else(|| get_config("HOSTNAME", "127.0.0.1:8080"));
 
-    // We create a TCP listener which will listen for incoming
+    // We create a TCP listener which will listen for incoming requests
     let listener = TcpListener::bind(&addr).await?;
 
     println!("Listening on: {}", addr);
