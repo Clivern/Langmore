@@ -22,19 +22,21 @@ struct Command {
 }
 
 impl Command {
-    pub fn new() -> Command {
+    pub fn new<S: Into<String>>(key: S, value: S, expire: i64, name: Type) -> Command {
         Command {
-            key: "".to_string(),
-            value: "".to_string(),
-            expire: 0,
-            name: Type::Unknown,
+            key: key.into(),
+            value: value.into(),
+            expire: expire,
+            name: name,
         }
     }
 
-    pub fn from_str(cmd: String) -> Result<Command, String> {
+    pub fn from_str<S: Into<String>>(cmd: S) -> Result<Command, String> {
         let name_val: Type;
 
-        let command = cmd.trim().to_string();
+        let cmd_str = cmd.into();
+
+        let command = cmd_str.trim().to_string();
         let mut items: Vec<&str> = command.split(' ').collect();
 
         // Match the command
@@ -75,7 +77,7 @@ impl Command {
                 || (name_val == Type::Delete)
                 || (items[1] == ""))
         {
-            return Err(format!("invalid command {cmd}", cmd = cmd));
+            return Err(format!("invalid command {cmd}", cmd = cmd_str));
         }
 
         if (items.len() < 3)
@@ -84,7 +86,7 @@ impl Command {
                 || (items[1] == "")
                 || (items[2] == ""))
         {
-            return Err(format!("invalid command {cmd}", cmd = cmd));
+            return Err(format!("invalid command {cmd}", cmd = cmd_str));
         }
 
         while items.len() < 4 {
@@ -95,12 +97,12 @@ impl Command {
             items[3] = "0"
         }
 
-        Ok(Command {
-            key: items[1].to_string(),
-            value: items[2].to_string(),
-            expire: items[3].to_string().parse::<i64>().unwrap(),
-            name: name_val,
-        })
+        Ok(Command::new(
+            items[1],
+            items[2],
+            items[3].to_string().parse::<i64>().unwrap(),
+            name_val,
+        ))
     }
 
     pub fn get_key(&self) -> &String {
@@ -119,12 +121,12 @@ impl Command {
         &self.name
     }
 
-    pub fn set_key(&mut self, key: String) {
-        self.key = key
+    pub fn set_key<S: Into<String>>(&mut self, key: S) {
+        self.key = key.into()
     }
 
-    pub fn set_value(&mut self, value: String) {
-        self.value = value
+    pub fn set_value<S: Into<String>>(&mut self, value: S) {
+        self.value = value.into()
     }
 
     pub fn set_expire(&mut self, expire: i64) {
@@ -140,10 +142,10 @@ impl Command {
 fn test_command() {
     let mut cmd: Command;
 
-    cmd = Command::new();
+    cmd = Command::new("", "", 0, Type::Unknown);
 
-    cmd.set_key("item1".to_string());
-    cmd.set_value("value1".to_string());
+    cmd.set_key("item1");
+    cmd.set_value("value1");
     cmd.set_expire(0);
     cmd.set_name(Type::Set);
 
@@ -153,7 +155,7 @@ fn test_command() {
     assert_eq!(*cmd.get_name(), Type::Set);
 
     // Test `SET $key $value $expire` command
-    match Command::from_str("SET item2 value2".to_string()) {
+    match Command::from_str("SET item2 value2") {
         Ok(v) => {
             cmd = v;
         }
