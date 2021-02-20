@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://www.rust-lang.org/logos/rust-logo-512x512-blk.png" width="20%" />
+    <img src="/static/12.jpeg" width="75%" />
     <h3 align="center">Langmore</h3>
     <p align="center">A KV Store Based On Write-Ahead Log</p>
     <p align="center">
