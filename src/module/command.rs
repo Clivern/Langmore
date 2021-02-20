@@ -40,7 +40,7 @@ impl Command {
         let mut items: Vec<&str> = command.split(' ').collect();
 
         // Match the command
-        match items[0] {
+        match items[0].to_uppercase().as_str() {
             "SET" => {
                 name_val = Type::Set;
             }
@@ -67,34 +67,28 @@ impl Command {
         // If an invalid command, raise an error
         if name_val == Type::Unknown {
             return Err(format!(
-                "invalid command name_val {name_val}",
+                "Invalid command name `{name_val}`",
                 name_val = items[0]
             ));
         }
 
-        if (items.len() < 2)
-            && ((name_val == Type::Get)
-                || (name_val == Type::Delete)
-                || (items[1] == ""))
-        {
-            return Err(format!("invalid command {cmd}", cmd = cmd_str));
-        }
-
-        if (items.len() < 3)
-            && ((name_val == Type::Set)
-                || (name_val == Type::Update)
-                || (items[1] == "")
-                || (items[2] == ""))
-        {
-            return Err(format!("invalid command {cmd}", cmd = cmd_str));
-        }
-
+        // Fix items
         while items.len() < 4 {
             items.push("");
         }
 
         if items[3] == "" {
             items[3] = "0"
+        }
+
+        if ((name_val == Type::Get) || (name_val == Type::Delete)) && (items[1] == "") {
+            return Err(format!("Invalid command {cmd}", cmd = cmd_str));
+        }
+
+        if ((name_val == Type::Set) || (name_val == Type::Update))
+            && ((items[1] == "") || (items[2] == ""))
+        {
+            return Err(format!("Invalid command {cmd}", cmd = cmd_str));
         }
 
         Ok(Command::new(
@@ -139,10 +133,8 @@ impl Command {
 }
 
 #[test]
-fn test_command() {
-    let mut cmd: Command;
-
-    cmd = Command::new("", "", 0, Type::Unknown);
+fn test_set_command() {
+    let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
 
     cmd.set_key("item1");
     cmd.set_value("value1");
@@ -166,4 +158,140 @@ fn test_command() {
     assert_eq!(*cmd.get_value(), "value2".to_string());
     assert_eq!(*cmd.get_expire(), 0);
     assert_eq!(*cmd.get_name(), Type::Set);
+
+    // Test `SET $key $value $expire` command
+    match Command::from_str("SET item2 value2 160") {
+        Ok(v) => {
+            cmd = v;
+        }
+        Err(_) => {}
+    }
+
+    assert_eq!(*cmd.get_key(), "item2".to_string());
+    assert_eq!(*cmd.get_value(), "value2".to_string());
+    assert_eq!(*cmd.get_expire(), 160);
+    assert_eq!(*cmd.get_name(), Type::Set);
+}
+
+#[test]
+fn test_get_command() {
+    let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
+
+    // Test `GET $key` command
+    match Command::from_str("GET item2") {
+        Ok(v) => {
+            cmd = v;
+        }
+        Err(_) => {}
+    }
+
+    assert_eq!(*cmd.get_key(), "item2".to_string());
+    assert_eq!(*cmd.get_value(), "".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Get);
+}
+
+#[test]
+fn test_delete_command() {
+    let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
+
+    // Test `DELETE $key` command
+    match Command::from_str("DELETE item2") {
+        Ok(v) => {
+            cmd = v;
+        }
+        Err(_) => {}
+    }
+
+    assert_eq!(*cmd.get_key(), "item2".to_string());
+    assert_eq!(*cmd.get_value(), "".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Delete);
+}
+
+#[test]
+fn test_ping_command() {
+    let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
+
+    // Test `PING` command
+    match Command::from_str("PING") {
+        Ok(v) => {
+            cmd = v;
+        }
+        Err(_) => {}
+    }
+
+    assert_eq!(*cmd.get_key(), "".to_string());
+    assert_eq!(*cmd.get_value(), "".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Ping);
+}
+
+#[test]
+fn test_exit_command() {
+    let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
+
+    // Test `EXIT` command
+    match Command::from_str("EXIT") {
+        Ok(v) => {
+            cmd = v;
+        }
+        Err(_) => {}
+    }
+
+    assert_eq!(*cmd.get_key(), "".to_string());
+    assert_eq!(*cmd.get_value(), "".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Exit);
+
+    // Test `exit` command
+    match Command::from_str("exit") {
+        Ok(v) => {
+            cmd = v;
+        }
+        Err(_) => {}
+    }
+
+    assert_eq!(*cmd.get_key(), "".to_string());
+    assert_eq!(*cmd.get_value(), "".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Exit);
+}
+
+#[test]
+fn test_error1_command() {
+    let mut err: String = String::from("");
+
+    match Command::from_str("inver") {
+        Ok(_) => {}
+        Err(e) => err = e,
+    }
+
+    assert_eq!(err, "Invalid command name `inver`".to_string());
+}
+
+#[test]
+fn test_error2_command() {
+    let mut err: String = String::from("");
+
+    // Test `EXIT` command
+    match Command::from_str("get ") {
+        Ok(_) => {}
+        Err(e) => err = e,
+    }
+
+    assert_eq!(err, "Invalid command get ".to_string());
+}
+
+#[test]
+fn test_error3_command() {
+    let mut err: String = String::from("");
+
+    // Test `EXIT` command
+    match Command::from_str("update gs") {
+        Ok(_) => {}
+        Err(e) => err = e,
+    }
+
+    assert_eq!(err, "Invalid command update gs".to_string());
 }
