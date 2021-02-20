@@ -32,7 +32,7 @@ impl Command {
     }
 
     pub fn from_str(cmd: String) -> Result<Command, String> {
-        let name_val;
+        let name_val: Type;
 
         let command = cmd.trim().to_string();
         let mut items: Vec<&str> = command.split(' ').collect();
@@ -138,26 +138,30 @@ impl Command {
 
 #[test]
 fn test_command() {
-    let mut cmd1 = Command::new();
+    let mut cmd: Command;
 
-    cmd1.set_key("item".to_string());
-    cmd1.set_value("value".to_string());
-    cmd1.set_expire(0);
-    cmd1.set_name(Type::Set);
+    cmd = Command::new();
 
-    assert_eq!(*cmd1.get_key(), "item".to_string());
-    assert_eq!(*cmd1.get_value(), "value".to_string());
-    assert_eq!(*cmd1.get_expire(), 0);
-    assert_eq!(*cmd1.get_name(), Type::Set);
+    cmd.set_key("item1".to_string());
+    cmd.set_value("value1".to_string());
+    cmd.set_expire(0);
+    cmd.set_name(Type::Set);
 
-    match Command::from_str("SET item value".to_string()) {
+    assert_eq!(*cmd.get_key(), "item1".to_string());
+    assert_eq!(*cmd.get_value(), "value1".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Set);
+
+    // Test `SET $key $value $expire` command
+    match Command::from_str("SET item2 value2".to_string()) {
         Ok(v) => {
-            let cmd2 = v;
-            assert_eq!(*cmd2.get_key(), "item".to_string());
-            assert_eq!(*cmd2.get_value(), "value".to_string());
-            assert_eq!(*cmd2.get_expire(), 0);
-            assert_eq!(*cmd2.get_name(), Type::Set);
+            cmd = v;
         }
         Err(_) => {}
     }
+
+    assert_eq!(*cmd.get_key(), "item2".to_string());
+    assert_eq!(*cmd.get_value(), "value2".to_string());
+    assert_eq!(*cmd.get_expire(), 0);
+    assert_eq!(*cmd.get_name(), Type::Set);
 }
