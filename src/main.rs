@@ -11,6 +11,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 
 use dotenv::dotenv;
+use module::command::{Command, Type};
 use std::env;
 use std::error::Error;
 use util::environ::get_config;
@@ -48,14 +49,49 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 }
 
                 let command = &buf[0..n];
+                let mut out = String::from("");
+                let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
 
                 let _s = match std::str::from_utf8(command) {
-                    Ok(v) => println!("Command: {}", v),
+                    Ok(v) => {
+                        match Command::from_str(v) {
+                            Ok(v) => {
+                                cmd = v;
+
+                                match *cmd.get_name() {
+                                    Type::Ping => {
+                                        out = String::from("PONG\n");
+                                    }
+                                    Type::Exit => {
+                                        out = String::from("OK\n");
+                                    }
+                                    Type::Get => {
+                                        out = String::from("OK\n");
+                                    }
+                                    Type::Set => {
+                                        out = String::from("OK\n");
+                                    }
+                                    Type::Update => {
+                                        out = String::from("OK\n");
+                                    }
+                                    Type::Delete => {
+                                        out = String::from("OK\n");
+                                    }
+                                    _ => {
+                                        out = String::from("UNKNOWN\n");
+                                    }
+                                }
+                            }
+                            Err(e) => out = format!("{}\n", e),
+                        }
+
+                        println!("{:?}", cmd);
+                    }
                     Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
                 };
 
                 socket
-                    .write_all(&buf[0..n])
+                    .write_all(&out.as_str().as_bytes())
                     .await
                     .expect("failed to write data to socket");
             }

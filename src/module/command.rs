@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 #[derive(Debug, PartialEq)]
-enum Type {
+pub enum Type {
     Set,
     Get,
     Update,
@@ -14,7 +14,7 @@ enum Type {
 }
 
 #[derive(Debug)]
-struct Command {
+pub struct Command {
     key: String,
     value: String,
     expire: i64,
