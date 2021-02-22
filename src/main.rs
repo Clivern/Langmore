@@ -49,7 +49,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 }
 
                 let command = &buf[0..n];
-                let mut out = String::from("");
+                let out;
                 let mut cmd: Command = Command::new("", "", 0, Type::Unknown);
 
                 let _s = match std::str::from_utf8(command) {
