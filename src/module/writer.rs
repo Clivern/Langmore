@@ -2,6 +2,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE file.
 
+use std::fs::metadata;
 use std::fs::read_to_string;
 use std::fs::File;
 use std::fs::OpenOptions;
@@ -18,7 +19,7 @@ impl Writer {
     ///
     /// # Returns
     ///
-    /// *  An instance of the writer object
+    /// * An instance of the writer object
     ///
     pub fn new() -> Writer {
         Writer {}
@@ -33,7 +34,7 @@ impl Writer {
     ///
     /// # Returns
     ///
-    /// *  A boolean whether file exists or not
+    /// * A boolean whether file exists or not
     ///
     pub fn file_exists(&self, path: String) -> bool {
         let path = Path::new(path.as_str());
@@ -53,9 +54,20 @@ impl Writer {
     /// * `path` - A string that holds the path to the file
     /// * `content` - The file content
     ///
-    pub fn overwrite(&self, path: String, content: String) {
-        let mut file = File::create(path.as_str()).unwrap();
-        file.write_all(content.as_str().as_bytes()).unwrap();
+    /// # Returns
+    ///
+    /// * Error raised
+    ///
+    pub fn overwrite(&self, path: String, content: String) -> Result<(), String> {
+        let file = File::create(path.as_str());
+
+        match file {
+            Ok(mut fi) => match fi.write_all(content.as_str().as_bytes()) {
+                Err(e) => Err(format!("Error raised: {}", e.to_string())),
+                Ok(_) => Ok(()),
+            },
+            Err(e) => Err(format!("Error raised: {}", e.to_string())),
+        }
     }
 
     ///
@@ -66,15 +78,24 @@ impl Writer {
     /// * `path` - A string that holds the path to the file
     /// * `line` - The line content to append
     ///
-    pub fn append(&self, path: String, line: String) {
-        let mut file = OpenOptions::new()
+    /// # Returns
+    ///
+    /// * Error raised
+    ///
+    pub fn append(&self, path: String, line: String) -> Result<(), String> {
+        let file = OpenOptions::new()
             .write(true)
             .append(true)
             .create(true)
-            .open(path.to_string())
-            .unwrap();
+            .open(path.to_string());
 
-        file.write_all(line.as_str().as_bytes()).unwrap();
+        match file {
+            Ok(mut fi) => match fi.write_all(line.as_str().as_bytes()) {
+                Err(e) => Err(format!("Error raised: {}", e.to_string())),
+                Ok(_) => Ok(()),
+            },
+            Err(e) => Err(format!("Error raised: {}", e.to_string())),
+        }
     }
 
     ///
@@ -86,33 +107,116 @@ impl Writer {
     ///
     /// # Returns
     ///
-    /// *  The file content
+    /// * The file content
+    /// * Error raised
     ///
-    pub fn read(&self, path: String) -> String {
-        let contents = read_to_string(path.to_string())
-            .expect("Should have been able to read the file");
-        format!("{}", contents)
+    pub fn read(&self, path: String) -> Result<String, String> {
+        let fi = read_to_string(path.to_string());
+
+        match fi {
+            Ok(content) => Ok(content),
+            Err(err) => Err(format!("Error raised: {}", err.to_string())),
+        }
+    }
+
+    ///
+    /// Get the file size in bytes
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - A string that holds the path to the file
+    ///
+    /// # Returns
+    ///
+    /// * The file size in bytes and error
+    /// * Error raised
+    ///
+    fn filesize(&self, path: String) -> Result<u64, String> {
+        let fi = metadata(path.to_string());
+
+        match fi {
+            Ok(file) => Ok(file.len()),
+            Err(err) => Err(format!("Error raised: {}", err.to_string())),
+        }
     }
 }
 
-#[test]
-fn test_writer() {
-    let wt: Writer = Writer::new();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    assert_eq!(wt.file_exists("cache/.gitignore".to_string()), true);
-    assert_eq!(wt.file_exists("cache/gitignore".to_string()), false);
+    #[test]
+    /// test file_exists method
+    fn test_file_exists() {
+        let wt: Writer = Writer::new();
+        assert_eq!(wt.file_exists("cache/.gitignore".to_string()), true);
+        assert_eq!(wt.file_exists("cache/gitignore".to_string()), false);
+    }
 
-    wt.overwrite("cache/test1.log".to_string(), "Hello World".to_string());
-    assert_eq!(wt.file_exists("cache/test1.log".to_string()), true);
+    #[test]
+    /// test overwrite method
+    fn test_overwrite() {
+        let wt: Writer = Writer::new();
+        let result =
+            wt.overwrite("cache/test1.log".to_string(), "Hello World".to_string());
 
-    wt.append("cache/test1.log".to_string(), "\nHello World".to_string());
-    assert_eq!(wt.file_exists("cache/test1.log".to_string()), true);
+        match result {
+            Ok(_) => {
+                assert!(true, "overwrite operation succeeded!");
+            }
+            Err(_) => {
+                assert!(false, "overwrite operation failed!");
+            }
+        }
+    }
 
-    wt.append("cache/test2.log".to_string(), "Hello World".to_string());
-    assert_eq!(wt.file_exists("cache/test2.log".to_string()), true);
+    #[test]
+    /// test append method
+    fn test_append() {
+        let wt: Writer = Writer::new();
+        let result = wt.append("cache/test2.log".to_string(), "Hello World".to_string());
 
-    assert_eq!(
-        wt.read("cache/test1.log".to_string()),
-        "Hello World\nHello World".to_string()
-    );
+        match result {
+            Ok(_) => {
+                assert!(true, "append operation succeeded!");
+            }
+            Err(_) => {
+                assert!(false, "append operation failed!");
+            }
+        }
+    }
+
+    #[test]
+    /// test read method
+    fn test_read() {
+        let wt: Writer = Writer::new();
+        let result = wt.read("cache/test1.log".to_string());
+
+        match result {
+            Ok(data) => {
+                assert_eq!(data, "Hello World".to_string());
+                assert!(true, "read operation succeeded!");
+            }
+            Err(_) => {
+                assert!(false, "read operation failed!");
+            }
+        }
+    }
+
+    #[test]
+    /// test filesize method
+    fn test_filesize() {
+        let wt: Writer = Writer::new();
+        let result = wt.filesize("cache/test1.log".to_string());
+
+        match result {
+            Ok(size) => {
+                assert_eq!(size, 11);
+                assert!(true, "filesize operation succeeded!");
+            }
+            Err(_) => {
+                assert!(false, "filesize operation failed!");
+            }
+        }
+    }
 }
